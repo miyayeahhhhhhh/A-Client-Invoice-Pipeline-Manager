@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="FreelanceFlow — Offline-first client and invoice pipeline manager for freelancers." />
+  <title>FreelanceFlow</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       AUTH SCREEN
+  ═══════════════════════════════════════════════ -->
+  <main id="auth-screen" class="auth-screen" aria-label="Login">
+
+    <div class="auth-brand">
+      <span class="auth-brand__logo" aria-hidden="true">⬡</span>
+      <span class="auth-brand__name">FreelanceFlow</span>
+    </div>
+
+    <section class="auth-card" role="region" aria-labelledby="auth-heading">
+      <header class="auth-card__header">
+        <h1 id="auth-heading" class="auth-card__title">Sign in to your workspace</h1>
+        <p class="auth-card__subtitle">Manage clients, projects, and invoices — all offline.</p>
+      </header>
+
+      <div class="auth-demo-hint" role="note" aria-label="Demo credentials">
+        <span class="auth-demo-hint__icon">💡</span>
+        <span>Demo: <strong>alex@freelanceflow.io</strong> / <strong>Demo@1234</strong></span>
+      </div>
+
+      <form id="login-form" class="auth-form" novalidate aria-label="Login form">
+
+        <div class="form-group" id="fg-email">
+          <label class="form-label" for="email">Email address</label>
+          <div class="input-wrapper">
+            <span class="input-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </span>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              class="form-input"
+              placeholder="you@example.com"
+              autocomplete="email"
+              aria-required="true"
+              aria-describedby="email-error"
+            />
+          </div>
+          <span id="email-error" class="form-error" role="alert" aria-live="polite"></span>
+        </div>
+
+        <div class="form-group" id="fg-password">
+          <label class="form-label" for="password">Password</label>
+          <div class="input-wrapper">
+            <span class="input-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </span>
+            <input
+              id="password"
+              name="password"
+              type="password"
+              class="form-input"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              aria-required="true"
+              aria-describedby="password-error"
+            />
+            <button type="button" id="toggle-password" class="input-toggle" aria-label="Show password">
+              <svg id="eye-open" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg id="eye-closed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
+          </div>
+          <span id="password-error" class="form-error" role="alert" aria-live="polite"></span>
+        </div>
+
+        <div class="auth-options">
+          <label class="checkbox-label">
+            <input type="checkbox" id="remember-me" name="remember" />
+            <span class="checkbox-custom" aria-hidden="true"></span>
+            <span>Remember me</span>
+          </label>
+        </div>
+
+        <div id="auth-global-error" class="auth-alert auth-alert--error hidden" role="alert" aria-live="assertive">
+          <span class="auth-alert__icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </span>
+          <span id="auth-global-error-text"></span>
+        </div>
+
+        <button type="submit" id="login-btn" class="btn btn--primary btn--full" aria-label="Sign in">
+          <span class="btn__text">Sign In</span>
+          <span class="btn__spinner" aria-hidden="true"></span>
+        </button>
+
+      </form>
+    </section>
+
+    <footer class="auth-footer">
+      <p>Built with vanilla JS · Offline-first · No backend required</p>
+    </footer>
+
+  </main>
+
+
+  <!-- ═══════════════════════════════════════════════
+       APP WORKSPACE (hidden until authenticated)
+  ═══════════════════════════════════════════════ -->
+  <div id="app-workspace" class="app-workspace hidden" aria-label="FreelanceFlow Application">
+
+    <!-- TOP NAVIGATION BAR -->
+    <nav class="app-nav" role="navigation" aria-label="Main navigation">
+      <div class="app-nav__brand">
+        <span class="app-nav__logo" aria-hidden="true">⬡</span>
+        <span class="app-nav__name">FreelanceFlow</span>
+      </div>
+
+      <div class="app-nav__tabs" role="tablist" aria-label="Application sections">
+        <button class="nav-tab nav-tab--active" role="tab" aria-selected="true" data-tab="pipeline" aria-controls="view-pipeline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Pipeline
+        </button>
+        <button class="nav-tab" role="tab" aria-selected="false" data-tab="invoices" aria-controls="view-invoices">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          Invoices
+        </button>
+        <button class="nav-tab" role="tab" aria-selected="false" data-tab="dashboard" aria-controls="view-dashboard">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          Dashboard
+        </button>
+      </div>
+
+      <div class="app-nav__user">
+        <span class="user-avatar" id="user-avatar" aria-hidden="true">A</span>
+        <span class="user-name" id="user-name-display">Alex</span>
+        <button class="btn btn--ghost btn--sm" id="logout-btn" aria-label="Sign out">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Sign out
+        </button>
+      </div>
+    </nav>
+
+    <!-- ── VIEW: PIPELINE ─────────────────────────── -->
+    <section id="view-pipeline" class="app-view app-view--active" role="tabpanel" aria-labelledby="tab-pipeline">
+
+      <header class="view-header">
+        <div>
+          <h2 class="view-title">Client Pipeline</h2>
+          <p class="view-subtitle">Drag clients between stages to track progress.</p>
+        </div>
+        <button class="btn btn--primary" id="add-client-btn" aria-label="Add new client">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add Client
+        </button>
+      </header>
+
+      <!-- Kanban Board -->
+      <div class="kanban-board" id="kanban-board" role="list" aria-label="Client pipeline board">
+
+        <div class="kanban-column" data-stage="lead" role="listitem" aria-label="Lead stage">
+          <div class="kanban-column__header">
+            <span class="kanban-column__dot kanban-column__dot--lead" aria-hidden="true"></span>
+            <h3 class="kanban-column__title">Lead</h3>
+            <span class="kanban-column__count badge" id="count-lead" aria-label="Lead count">0</span>
+          </div>
+          <div class="kanban-column__body" id="stage-lead" data-stage="lead" role="list" aria-label="Lead clients" aria-dropeffect="move"></div>
+          <button class="kanban-add-card" data-stage="lead" aria-label="Add client to Lead stage">+ Add card</button>
+        </div>
+
+        <div class="kanban-column" data-stage="active" role="listitem" aria-label="Active stage">
+          <div class="kanban-column__header">
+            <span class="kanban-column__dot kanban-column__dot--active" aria-hidden="true"></span>
+            <h3 class="kanban-column__title">Active</h3>
+            <span class="kanban-column__count badge" id="count-active" aria-label="Active count">0</span>
+          </div>
+          <div class="kanban-column__body" id="stage-active" data-stage="active" role="list" aria-label="Active clients" aria-dropeffect="move"></div>
+          <button class="kanban-add-card" data-stage="active" aria-label="Add client to Active stage">+ Add card</button>
+        </div>
+
+        <div class="kanban-column" data-stage="review" role="listitem" aria-label="In Review stage">
+          <div class="kanban-column__header">
+            <span class="kanban-column__dot kanban-column__dot--review" aria-hidden="true"></span>
+            <h3 class="kanban-column__title">In Review</h3>
+            <span class="kanban-column__count badge" id="count-review" aria-label="Review count">0</span>
+          </div>
+          <div class="kanban-column__body" id="stage-review" data-stage="review" role="list" aria-label="In Review clients" aria-dropeffect="move"></div>
+          <button class="kanban-add-card" data-stage="review" aria-label="Add client to In Review stage">+ Add card</button>
+        </div>
+
+        <div class="kanban-column" data-stage="completed" role="listitem" aria-label="Completed stage">
+          <div class="kanban-column__header">
+            <span class="kanban-column__dot kanban-column__dot--completed" aria-hidden="true"></span>
+            <h3 class="kanban-column__title">Completed</h3>
+            <span class="kanban-column__count badge" id="count-completed" aria-label="Completed count">0</span>
+          </div>
+          <div class="kanban-column__body" id="stage-completed" data-stage="completed" role="list" aria-label="Completed clients" aria-dropeffect="move"></div>
+          <button class="kanban-add-card" data-stage="completed" aria-label="Add client to Completed stage">+ Add card</button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── VIEW: INVOICES ─────────────────────────── -->
+    <section id="view-invoices" class="app-view" role="tabpanel" aria-labelledby="tab-invoices">
+
+      <header class="view-header">
+        <div>
+          <h2 class="view-title">Invoices</h2>
+          <p class="view-subtitle">Create, track, and export your billing records.</p>
+        </div>
+        <div class="view-header__actions">
+          <button class="btn btn--ghost" id="export-csv-btn" aria-label="Export invoices to CSV">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Export CSV
+          </button>
+          <button class="btn btn--primary" id="add-invoice-btn" aria-label="Create new invoice">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New Invoice
+          </button>
+        </div>
+      </header>
+
+      <!-- Invoice Filters -->
+      <div class="invoice-filters" role="group" aria-label="Filter invoices">
+        <button class="filter-chip filter-chip--active" data-filter="all">All</button>
+        <button class="filter-chip" data-filter="draft">Draft</button>
+        <button class="filter-chip" data-filter="sent">Sent</button>
+        <button class="filter-chip" data-filter="paid">Paid</button>
+        <button class="filter-chip" data-filter="overdue">Overdue</button>
+      </div>
+
+      <!-- Invoice Table -->
+      <div class="table-container" role="region" aria-label="Invoice list">
+        <table class="data-table" id="invoice-table" aria-label="Invoices">
+          <thead>
+            <tr>
+              <th scope="col">Invoice #</th>
+              <th scope="col">Client</th>
+              <th scope="col">Project</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Due Date</th>
+              <th scope="col">Status</th>
+              <th scope="col"><span class="sr-only">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody id="invoice-table-body" aria-live="polite">
+            <!-- Rows injected by app.js -->
+          </tbody>
+        </table>
+        <div id="invoice-empty" class="empty-state hidden" aria-live="polite">
+          <span class="empty-state__icon" aria-hidden="true">🧾</span>
+          <p class="empty-state__title">No invoices yet</p>
+          <p class="empty-state__text">Create your first invoice to get started.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── VIEW: DASHBOARD ────────────────────────── -->
+    <section id="view-dashboard" class="app-view" role="tabpanel" aria-labelledby="tab-dashboard">
+
+      <header class="view-header">
+        <div>
+          <h2 class="view-title">Earnings Dashboard</h2>
+          <p class="view-subtitle">A live summary of your pipeline and revenue.</p>
+        </div>
+      </header>
+
+      <!-- KPI Cards -->
+      <div class="kpi-grid" role="list" aria-label="Key performance indicators">
+        <article class="kpi-card" role="listitem">
+          <p class="kpi-card__label">Total Revenue</p>
+          <p class="kpi-card__value" id="kpi-total-revenue">$0</p>
+          <p class="kpi-card__sub" id="kpi-paid-invoices">0 invoices paid</p>
+        </article>
+        <article class="kpi-card" role="listitem">
+          <p class="kpi-card__label">Outstanding</p>
+          <p class="kpi-card__value kpi-card__value--warn" id="kpi-outstanding">$0</p>
+          <p class="kpi-card__sub" id="kpi-pending-count">0 unpaid invoices</p>
+        </article>
+        <article class="kpi-card" role="listitem">
+          <p class="kpi-card__label">Active Clients</p>
+          <p class="kpi-card__value" id="kpi-active-clients">0</p>
+          <p class="kpi-card__sub" id="kpi-pipeline-total">0 total in pipeline</p>
+        </article>
+        <article class="kpi-card" role="listitem">
+          <p class="kpi-card__label">Overdue</p>
+          <p class="kpi-card__value kpi-card__value--danger" id="kpi-overdue">$0</p>
+          <p class="kpi-card__sub" id="kpi-overdue-count">0 overdue invoices</p>
+        </article>
+      </div>
+
+      <!-- Per-client Earnings Breakdown -->
+      <div class="dashboard-section">
+        <h3 class="dashboard-section__title">Per-Client Earnings Breakdown</h3>
+        <div id="client-breakdown" class="client-breakdown" aria-live="polite">
+          <!-- Injected by app.js -->
+        </div>
+        <div id="breakdown-empty" class="empty-state hidden">
+          <span class="empty-state__icon" aria-hidden="true">📊</span>
+          <p class="empty-state__title">No data yet</p>
+          <p class="empty-state__text">Add clients and invoices to see your breakdown.</p>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════
+       MODAL: ADD / EDIT CLIENT
+  ═══════════════════════════════════════════════ -->
+  <div id="client-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="client-modal-title">
+    <div class="modal" role="document">
+      <header class="modal__header">
+        <h2 id="client-modal-title" class="modal__title">Add Client</h2>
+        <button class="modal__close" id="close-client-modal" aria-label="Close dialog">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </header>
+      <div class="modal__body">
+        <form id="client-form" novalidate>
+          <input type="hidden" id="client-id-field" />
+          <div class="form-group">
+            <label class="form-label" for="client-name">Client / Company Name <span class="required" aria-hidden="true">*</span></label>
+            <input type="text" id="client-name" class="form-input" placeholder="Acme Corp" required maxlength="80" />
+            <span class="form-error" id="client-name-error" role="alert"></span>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="client-contact">Contact Person</label>
+              <input type="text" id="client-contact" class="form-input" placeholder="Jane Smith" maxlength="60" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="client-email">Contact Email</label>
+              <input type="email" id="client-email" class="form-input" placeholder="jane@acme.com" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="client-budget">Project Budget ($)</label>
+              <input type="number" id="client-budget" class="form-input" placeholder="5000" min="0" step="0.01" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="client-stage">Pipeline Stage <span class="required" aria-hidden="true">*</span></label>
+              <select id="client-stage" class="form-input form-select" required>
+                <option value="lead">Lead</option>
+                <option value="active">Active</option>
+                <option value="review">In Review</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="client-tags">Tags <span class="form-hint">(comma-separated)</span></label>
+            <input type="text" id="client-tags" class="form-input" placeholder="design, branding, urgent" maxlength="100" />
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="client-notes">Notes</label>
+            <textarea id="client-notes" class="form-input form-textarea" placeholder="Project scope, deadlines, special requirements..." rows="3" maxlength="500"></textarea>
+          </div>
+        </form>
+      </div>
+      <footer class="modal__footer">
+        <button type="button" class="btn btn--ghost" id="cancel-client-btn">Cancel</button>
+        <button type="button" class="btn btn--danger btn--sm hidden" id="delete-client-btn">Delete Client</button>
+        <button type="button" class="btn btn--primary" id="save-client-btn">Save Client</button>
+      </footer>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════
+       MODAL: ADD / EDIT INVOICE
+  ═══════════════════════════════════════════════ -->
+  <div id="invoice-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="invoice-modal-title">
+    <div class="modal" role="document">
+      <header class="modal__header">
+        <h2 id="invoice-modal-title" class="modal__title">New Invoice</h2>
+        <button class="modal__close" id="close-invoice-modal" aria-label="Close dialog">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </header>
+      <div class="modal__body">
+        <form id="invoice-form" novalidate>
+          <input type="hidden" id="invoice-id-field" />
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="invoice-client">Client <span class="required" aria-hidden="true">*</span></label>
+              <select id="invoice-client" class="form-input form-select" required>
+                <option value="">— Select client —</option>
+              </select>
+              <span class="form-error" id="invoice-client-error" role="alert"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="invoice-project">Project / Description <span class="required" aria-hidden="true">*</span></label>
+              <input type="text" id="invoice-project" class="form-input" placeholder="Website Redesign" required maxlength="80" />
+              <span class="form-error" id="invoice-project-error" role="alert"></span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="invoice-amount">Amount ($) <span class="required" aria-hidden="true">*</span></label>
+              <input type="number" id="invoice-amount" class="form-input" placeholder="2500.00" min="0.01" step="0.01" required />
+              <span class="form-error" id="invoice-amount-error" role="alert"></span>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="invoice-tax">Tax Rate (%)</label>
+              <input type="number" id="invoice-tax" class="form-input" placeholder="10" min="0" max="100" step="0.1" value="0" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="invoice-issue-date">Issue Date</label>
+              <input type="date" id="invoice-issue-date" class="form-input" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="invoice-due-date">Due Date <span class="required" aria-hidden="true">*</span></label>
+              <input type="date" id="invoice-due-date" class="form-input" required />
+              <span class="form-error" id="invoice-due-error" role="alert"></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="invoice-status">Status</label>
+            <select id="invoice-status" class="form-input form-select">
+              <option value="draft">Draft</option>
+              <option value="sent">Sent</option>
+              <option value="paid">Paid</option>
+              <option value="overdue">Overdue</option>
+            </select>
+          </div>
+          <div class="invoice-total-preview" id="invoice-total-preview" role="region" aria-label="Invoice total preview">
+            <div class="invoice-total-preview__row">
+              <span>Subtotal</span>
+              <strong id="preview-subtotal">$0.00</strong>
+            </div>
+            <div class="invoice-total-preview__row">
+              <span>Tax</span>
+              <strong id="preview-tax">$0.00</strong>
+            </div>
+            <div class="invoice-total-preview__row invoice-total-preview__row--total">
+              <span>Total</span>
+              <strong id="preview-total">$0.00</strong>
+            </div>
+          </div>
+        </form>
+      </div>
+      <footer class="modal__footer">
+        <button type="button" class="btn btn--ghost" id="cancel-invoice-btn">Cancel</button>
+        <button type="button" class="btn btn--danger btn--sm hidden" id="delete-invoice-btn">Delete</button>
+        <button type="button" class="btn btn--primary" id="save-invoice-btn">Save Invoice</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite" aria-atomic="true">
+    <span class="toast__icon" id="toast-icon" aria-hidden="true"></span>
+    <span id="toast-message"></span>
+  </div>
+
+  <script src="auth.js" type="module"></script>
+  <script src="app.js" type="module"></script>
+</body>
+</html>
